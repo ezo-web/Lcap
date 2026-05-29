@@ -11,8 +11,10 @@ const server = Bun.serve({
     console.log(clientIP)
 
     try {
+      const pythonExecutable = process.env.PYTHON_BIN || "/usr/bin/python3";
+
       // Pass clientIP as an argument to the Python script
-      const proc = Bun.spawn(["python3", "ipCheck/1.py"], {
+      const proc = Bun.spawn([pythonExecutable, "./ipCheck/1.py"], {
         env: { ...process.env, TARGET_IP: clientIP }
       });
 
