@@ -1,7 +1,8 @@
 const server = Bun.serve({
-  port: 3004,
+  port: 3005,
   async fetch(req, server) {
     const ipAddress = server.requestIP(req);
+    const url = new URL(req.url);
     
     // Ensure we actually caught an IP address before proceeding
     const clientIP = ipAddress?.address;
@@ -51,13 +52,9 @@ const server = Bun.serve({
         });
       }
 
-      return new Response(JSON.stringify({
-        success: true,
-        abuseConfidenceScore: score,
-        raw: decoded
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
+      if (score !== null && score < 5) {
+        return Response.redirect('https://supportive-comfort-production-5eed.up.railway.app/');
+      }
 
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
@@ -65,7 +62,7 @@ const server = Bun.serve({
         headers: { "Content-Type": "application/json" }
       });
     }
-  },
+  }
 });
 
 console.log(`Server running at http://localhost:${server.port}`);
